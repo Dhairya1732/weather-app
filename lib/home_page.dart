@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:weather_app/weather_model.dart';
 import 'package:weather_app/weather_services.dart';
 
@@ -10,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _weatherService = WeatherService("1cf52e073fd5cfde6d4584547a804ec3 ");
+  final _weatherService = WeatherService("1cf52e073fd5cfde6d4584547a804ec3");
   Weather? _weather;
 
   _fetchWeather() async {
@@ -23,6 +24,30 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       // ignore: avoid_print
       print(e);
+    }
+  }
+
+  String getWeatherAnimation(String? mainCondition) {
+    if (mainCondition == null) return "assets/animations/sunny.json";
+
+    switch (mainCondition.toLowerCase()) {
+      case "clouds":
+      case "mist":
+      case "haze":
+      case "fog":
+      case "smoke":
+      case "dust":
+        return "assets/animations/cloud.json";
+      case "rain":
+      case "drizzle":
+      case "shower rain":
+        return "assets/animations/rain.json";
+      case "thunderstorm":
+        return "assets/animations/thunder.json";
+      case "clear":
+        return "assets/animations/sunny.json";
+      default:
+        return "assets/animations/sunny.json";
     }
   }
 
@@ -40,7 +65,9 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(_weather?.cityName ?? "Loading city..."),
-            Text("${_weather?.temperature.round()} degree Celsius")
+            Lottie.asset(getWeatherAnimation(_weather?.mainCondition ?? "")),
+            Text("${_weather?.temperature.round()} Degree Celsius"),
+            Text(_weather?.mainCondition ?? ""),
           ],
         ),
       ),
